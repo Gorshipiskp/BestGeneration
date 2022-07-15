@@ -1,47 +1,30 @@
 import config
+import sqlite3
+from base import transl
+from base import show_error
+from base import error_print
+
+
+hm_bd = "humans.db"
+
+
+def exists_db():
+    try:
+        sqlite3.connect('humans.db').cursor().execute("CREATE TABLE IF NOT EXISTS PEOPLES(id INTEGER PRIMARY KEY "
+                                                      "AUTOINCREMENT, name TEXT, surname TEXT, "
+                                                      "patronymic TEXT, alive BOOL, history TEXT, gender INT, "
+                                                      "educations TEXT, age INT, parents TEXT)")
+    except:
+        error_print(f"{transl('ERROR')} 002 {show_error(2) if config.show_errors_description else ''}")
+
+
+exists_db()
 
 
 class Person:
 
-    def __init__(self):
-        self.id = 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001
-        if config.history:
-            self.history = []  # History of actions
-        self.name = "Никита"  # First name
-        self.surname = "Демидов"  # Second name
-        self.patronymic = "Сергеевич"  # Middle name
-        self.age = 0  # Days lived
-        self.gender = 1  # Gender's ID
-        self.parents = []  # Parents ID
-        self.education = []  # Educations ID's
+    def __init__(self, id_pers):
+        self.id = id_pers
 
-    def get_age(self):
-        return self.age
-
-    def get_id(self):
-        return self.id
-
-    def get_name(self):
-        return self.name
-
-    def get_surname(self):
-        return self.surname
-
-    def get_middle_name(self):
-        return self.patronymic
-
-    def get_full_name(self):
-        return f"{self.surname} {self.name} {self.patronymic}"
-
-    def get_education(self):
-        return self.education
-
-    def get_gender(self):
-        return self.gender
-
-    def get_parents(self):
-        return self.parents
-
-    if config.history:
-        def get_history(self):
-            return self.history
+    def get(self, what):
+        return list(sqlite3.connect(hm_bd).cursor().execute(f"SELECT {what} FROM peoples WHERE id={self.id}"))[0][0]
