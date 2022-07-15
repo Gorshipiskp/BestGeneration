@@ -45,12 +45,3 @@ class Person:
     if config.history:
         def get_history(self):
             return self.history
-
-
-class register:
-
-    def __init__(self):
-        self.cls = Person
-
-    def new_method_person(self, func):
-        self.cls.test_def = func.__get__(self.cls)

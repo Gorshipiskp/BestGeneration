@@ -24,23 +24,35 @@ except Exception:
     except Exception:
         not_tr = True
 
-
 os.remove("lang_tr.py")
 
 drs = os.listdir("dlcs")
 
 open("modules_dlcs.py", "w+")
 p = open("modules_dlcs.py", "a")
+p.write("""from generation import Person""")
 
 for i in drs:
-    p.write(f'''\n\n"""{i.replace(".py", "").capitalize()}"""\n\n''')
+    p.write(f'''
+    
+"""{i.replace(".py", "").capitalize()}"""\n
+
+''')
     txt = "".join(open(f"dlcs/{i}", "r").readlines())
-    p.write(f"{txt}\n")
+    p.write(f"{txt}")
 p.close()
 
-try:
+if config.debug:
     import modules_dlcs as mn
-except:
-    print(f"{transl('ERROR')} 001 {show_error(1) if config.show_errors_description else ''}")
+else:
+    try:
+        import modules_dlcs as mn
+    except:
+        from generation import Person
+        print(f"{transl('ERROR')} 001 {show_error(1) if config.show_errors_description else ''}")
 
-os.remove("modules_dlcs.py")
+if not config.debug:
+    os.remove("modules_dlcs.py")
+
+print([i for i in dir(mn.Person) if not "__" in i])
+mn.Person.new_event(1, "Sleep")
