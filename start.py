@@ -1,11 +1,6 @@
-from base import lang_tr
-from base import transl
-from base import show_error
-from base import error_print
+from base import lang_tr, transl, show_error, error_print
 import os
 import config
-
-os.remove("lang_tr.py")
 
 drs = os.listdir("dlcs")
 
@@ -28,10 +23,10 @@ if config.debug:
 else:
     try:
         import modules_dlcs as mn
-    except:
+    except Exception:
         from generation import Person
 
-        print(f"{transl('ERROR')} 001 {show_error(1) if config.show_errors_description else ''}")
+        error_print(1)
 
 if not config.debug:
     os.remove("modules_dlcs.py")

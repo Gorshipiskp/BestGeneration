@@ -1,21 +1,20 @@
 import config
-import sqlite3
+import sqlite3 as sq
 from base import transl
 from base import show_error
 from base import error_print
 
 
-hm_bd = "humans.db"
-
-
-def exists_db():
+def exists_db() -> None:
     try:
-        sqlite3.connect('humans.db').cursor().execute("CREATE TABLE IF NOT EXISTS PEOPLES(id INTEGER PRIMARY KEY "
-                                                      "AUTOINCREMENT, name TEXT, surname TEXT, "
-                                                      "patronymic TEXT, alive BOOL, history TEXT, gender INT, "
-                                                      "educations TEXT, age INT, parents TEXT)")
-    except:
-        error_print(f"{transl('ERROR')} 002 {show_error(2) if config.show_errors_description else ''}")
+        sq.connect(f'{config.db_name}.db').cursor().execute(
+            f"""
+        CREATE TABLE IF NOT EXISTS PEOPLES(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, surname TEXT, 
+        {'patronymic TEXT, ' if config.patronymic else ''}{'money INT, ' if config.patronymic else ''}alive BOOL, 
+        history TEXT, gender INT, educations TEXT, age INT, parents TEXT)
+""")
+    except Exception:
+        error_print(2)
 
 
 exists_db()
@@ -26,5 +25,5 @@ class Person:
     def __init__(self, id_pers):
         self.id = id_pers
 
-    def get(self, what):
-        return list(sqlite3.connect(hm_bd).cursor().execute(f"SELECT {what} FROM peoples WHERE id={self.id}"))[0][0]
+    def get(self, what: str) -> int | str:
+        return list(sq.connect(f"{config.db_name}.db").cursor().execute(f"SELECT {what} FROM peoples WHERE id={self.id}"))[0][0]
